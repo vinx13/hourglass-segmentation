@@ -11,7 +11,7 @@ ffi = require 'ffi'
 torch.setdefaulttensortype('torch.FloatTensor')
 
 -- Project directory
-projectDir = paths.concat(os.getenv('HOME'),'pose-hg-train')
+projectDir = paths.concat(os.getenv('HOME'),'dev/deeplearning/pose-hg-train')
 
 -- Process command line arguments, load helper functions
 paths.dofile('opts.lua')
@@ -21,7 +21,7 @@ if not Logger then paths.dofile('util/Logger.lua') end
 
 -- Random number seed
 if opt.manualSeed ~= -1 then torch.manualSeed(opt.manualSeed)
-else torch.seed() end                           
+else torch.seed() end
 
 -- Initialize dataset
 if not dataset then
@@ -32,7 +32,7 @@ end
 -- Global reference (may be updated in the task file below)
 if not ref then
     ref = {}
-    ref.nOutChannels = dataset.nJoints
+    ref.nOutChannels = dataset.nParts
     ref.inputDim = {3, opt.inputRes, opt.inputRes}
     ref.outputDim = {ref.nOutChannels, opt.outputRes, opt.outputRes}
 end

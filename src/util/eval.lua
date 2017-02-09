@@ -115,7 +115,7 @@ function displayPCK(dists, part_idx, label, title, show_key)
 
     require 'gnuplot'
     gnuplot.raw('set title "' .. title .. '"')
-    if not show_key then gnuplot.raw('unset key') 
+    if not show_key then gnuplot.raw('unset key')
     else gnuplot.raw('set key font ",6" right bottom') end
     gnuplot.raw('set xrange [0:.5]')
     gnuplot.raw('set yrange [0:1]')

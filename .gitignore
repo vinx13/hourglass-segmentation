@@ -1,6 +1,11 @@
 *.t7
 *~
+*.h5
 *.pyc
 exp/
 data/**/images
 src/models/old
+.idea
+data/VOCdevkit
+data/Annotations_Part
+data/trainval.tar.gz
