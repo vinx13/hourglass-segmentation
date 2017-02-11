@@ -4,7 +4,7 @@ from scipy.io import loadmat
 import xml.etree.cElementTree as ET
 
 prefix = 'VOCdevkit/VOC2010'
-f = h5py.File('voc.h5', 'w')
+f = h5py.File('voc1.h5', 'w')
 annot = {k:[] for k in {'bbox','name', 'tag'}}
 mask_group = f.create_group('mask')
 mask_count = 0
@@ -41,6 +41,35 @@ def convert(set_name, tag):
             annot['name'].append(imgname_)
             annot['tag'].append(tag)
 
+part_id = {
+    'head':1,
+    'leye':1,
+    'reye':1,
+    'lear':1,
+    'rear':1,
+    'lebrow':1,
+    'rebrow':1,
+    'nose':1,
+    'mouth':1,
+    'hair':1,
+
+    'torso':2,
+    'neck':3,
+    'llarm':4,
+    'luarm':4,
+    'lhand':4,
+    'rlarm':5,
+    'ruarm':5,
+    'rhand':5,
+
+    'llleg':6,
+    'luleg':6,
+    'lfoot':6,
+    'rlleg':7,
+    'ruleg':7,
+    'rfoot':7,
+}
+
 def convert_mat(names):
     imgs = []
     for name in names:
@@ -49,13 +78,14 @@ def convert_mat(names):
         objects = mat['anno']['objects'][0][0]
         img = np.zeros_like(objects['mask'][0][0])
         #print img.shape
-        for i in range(objects.shape[1]):
-            if objects['class_ind'][0][i] != 15: # person
+        for i in range(objects.shape[1]): # number of objects
+            if objects['class_ind'][0][i][0][0] != 15: # person
                 continue
             parts = objects['parts'][0][i]
             for j in range(parts.shape[1]):
                 part_name, mask = parts[0][j]
-                img[mask > 0] = j
+                part_name = part_name[0]
+                img[mask > 0] = part_id[part_name]
         mask_group[name] = img
 
 
