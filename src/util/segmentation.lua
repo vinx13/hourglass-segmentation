@@ -78,19 +78,6 @@ function postprocess(set, idx, output)
     local p = getPreds(tmpOutput)
     local scores = torch.zeros(p:size(1),p:size(2),1)
 
-    -- Very simple post-processing step to improve performance at tight PCK thresholds
-    for i = 1,p:size(1) do
-        for j = 1,p:size(2) do
-            local hm = tmpOutput[i][j]
-            local pX,pY = p[i][j][1], p[i][j][2]
-            scores[i][j] = hm[pY][pX]
-            if pX > 1 and pX < opt.outputRes and pY > 1 and pY < opt.outputRes then
-               local diff = torch.Tensor({hm[pY][pX+1]-hm[pY][pX-1], hm[pY+1][pX]-hm[pY-1][pX]})
-               p[i][j]:add(diff:sign():mul(.25))
-            end
-        end
-    end
-    p:add(0.5)
 
     -- Transform predictions back to original coordinate space
     local p_tf = torch.zeros(p:size())
@@ -107,7 +94,7 @@ function accuracy_(output, label)
     local correct = 0
     for i=1,output:size()[1] do
       for j=1,dataset.nParts do
-        local a=output[i][j]:gt(0)
+        local a=output[i][j]:gt(0.5)
         local b=label[i][j]:gt(0.5)
         --print(a:size())
         --print(b:size())

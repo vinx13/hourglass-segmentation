@@ -23,7 +23,7 @@ for i=1,opt.nEpochs do
 end
 
 -- Update reference for last epoch
-opt.lastEpoch = epoch - 1
+--opt.lastEpoch = epoch - 1
 
 -- Save model
 model:clearState()

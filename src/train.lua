@@ -43,6 +43,7 @@ function step(tag)
 
         -- Do a forward pass and calculate loss
         local output = model:forward(input)
+        print(output)
         local err = criterion:forward(output, label)
         avgLoss = avgLoss + err / nIters
 
@@ -53,10 +54,10 @@ function step(tag)
             optfn(evalFn, param, optimState)
         else
             -- Validation: Get flipped output
-            output = applyFn(function (x) return x:clone() end, output)
-            local flippedOut = model:forward(flip(input))
-            flippedOut = applyFn(function (x) return flip(shuffleLR(x)) end, flippedOut)
-            output = applyFn(function (x,y) return x:add(y):div(2) end, output, flippedOut)
+            --output = applyFn(function (x) return x:clone() end, output)
+            --local flippedOut = model:forward(flip(input))
+            --flippedOut = applyFn(function (x) return flip(shuffleLR(x)) end, flippedOut)
+            --output = applyFn(function (x,y) return x:add(y):div(2) end, output, flippedOut)
 
             -- Save sample
             local bs = opt[set .. 'Batch']
@@ -65,15 +66,14 @@ function step(tag)
             if type(tmpOut) == 'table' then tmpOut = output[#output] end
             if opt.saveInput then saved.input:sub(tmpIdx, tmpIdx+bs-1):copy(input) end
             if opt.saveHeatmaps then saved.heatmaps:sub(tmpIdx, tmpIdx+bs-1):copy(tmpOut) end
-            saved.idxs:sub(tmpIdx, tmpIdx+bs-1):copy(indices)
-            saved.preds:sub(tmpIdx, tmpIdx+bs-1):copy(postprocess(set,indices,output))
+            --saved.idxs:sub(tmpIdx, tmpIdx+bs-1):copy(indices)
+            --saved.preds:sub(tmpIdx, tmpIdx+bs-1):copy(postprocess(set,indices,output))
         end
 
         -- Calculate accuracy
         avgAcc = avgAcc + accuracy(output, label) / nIters
     end
 
-    print(avgLoss)
     -- Print and log some useful metrics
     print(string.format("      %s : Loss: %.7f Acc: %.4f"  % {set, avgLoss, avgAcc}))
     if ref.log[set] then
@@ -87,6 +87,9 @@ function step(tag)
     end
 
     if (tag == 'valid' and opt.snapshot ~= 0 and epoch % opt.snapshot == 0) or tag == 'predict' then
+        -- Update lastEpoch
+        opt.lastEpoch = epoch
+
         -- Take a snapshot
         model:clearState()
         torch.save(paths.concat(opt.save, 'options.t7'), opt)

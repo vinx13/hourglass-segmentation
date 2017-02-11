@@ -42,7 +42,7 @@ function DataLoader:run()
 
     local function loop()
         local bound = math.min(self.batchsize, size - idx + 1)
-        if idx >= bound then return nil end
+        if idx > size then return nil end
         local indices = idxs:narrow(1, idx, bound)
         local inp,out = loadData(split, indices)
         sample = {inp, out, indices}

@@ -5,7 +5,7 @@ function Dataset:__init()
     local annot = {}
     local tags = {'name', 'bbox', 'tag'}
     local a = hdf5.open(paths.concat(projectDir,'data/voc.h5'),'r')
-    self.nParts = 15
+    self.nParts = 7
     for _, tag in ipairs(tags) do annot[tag] = a:read(tag):all() end
 
 
