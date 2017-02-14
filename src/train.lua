@@ -43,7 +43,6 @@ function step(tag)
 
         -- Do a forward pass and calculate loss
         local output = model:forward(input)
-        print(output)
         local err = criterion:forward(output, label)
         avgLoss = avgLoss + err / nIters
 
