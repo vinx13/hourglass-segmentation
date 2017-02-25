@@ -16,7 +16,7 @@ projectDir = paths.concat(os.getenv('HOME'),'dev/deeplearning/pose-hg-train')
 -- Process command line arguments, load helper functions
 paths.dofile('opts.lua')
 paths.dofile('util/img.lua')
-paths.dofile('util/eval.lua')
+
 if not Logger then paths.dofile('util/Logger.lua') end
 
 -- Random number seed

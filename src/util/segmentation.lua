@@ -71,24 +71,6 @@ function loadData(set, idxs)
     end
 end
 
-function postprocess(set, idx, output)
-    local tmpOutput
-    if type(output) == 'table' then tmpOutput = output[#output]
-    else tmpOutput = output end
-    local p = getPreds(tmpOutput)
-    local scores = torch.zeros(p:size(1),p:size(2),1)
-
-
-    -- Transform predictions back to original coordinate space
-    local p_tf = torch.zeros(p:size())
-    for i = 1,p:size(1) do
-        _,c,s = dataset:getPartInfo(idx[i])
-        p_tf[i]:copy(transformPreds(p[i], c, s, opt.outputRes))
-    end
-
-    return p_tf:cat(p,3):cat(scores,3)
-end
-
 function accuracy_(output, label)
     local total = output:numel()
     local true_positive = 0
