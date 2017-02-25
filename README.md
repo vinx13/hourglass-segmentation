@@ -15,7 +15,7 @@ cd src/demo
 th demo.th
 ```
 
-Some samples are shown below:
+Some samples are shown below:  
 ![](src/demo/2008_000652_out.jpg)  
 
 ![](src/demo/2008_000726_out.jpg)  
