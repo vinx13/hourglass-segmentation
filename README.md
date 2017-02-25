@@ -6,13 +6,13 @@ The entire system takes a image and a bounding box of a dominant person instance
 The model is trained using data of the person category in PASCAL-Part Dataset. Each instance of people has 24 part masks. To compress data and speedup training, some parts are merged. For example, The masks for eyes and heads are merged. Only 7 parts are remained after the preprocession. Data augmentation technique including random color-shifting and flipping are taken to increase capacity of the model.
 
 ## Training Detail
-We train the model in SGD with learning rate 0.0025, mini-batch size 8. After 55 epochs, we achieve average IoU between prediction and ground truth of 0.2170 for training set and 0.1584 for validation set.
+We train the model in SGD with learning rate 0.0025, mini-batch size 8. After 55 epochs, we achieve average IoU between prediction and ground truth of 0.2170 for training set and 0.1584 for validation set. Note that the network is not deep enough as we pick nStack = 3 due to the pool performance of the machine. 
 
 ## Demo
 Pretrained model is available on [BaiduYun](https://pan.baidu.com/s/1gfwttGB). Download and put the model in `/exp/voc/default/`, then run scripts below.
 ```
 cd src/demo
-th demo.th
+th demo.lua
 ```
 
 Some samples are shown below:  
