@@ -91,23 +91,38 @@ end
 
 function accuracy_(output, label)
     local total = output:numel()
-    local correct = 0
+    local true_positive = 0
+    local true_negative = 0
     for i=1,output:size()[1] do
       for j=1,dataset.nParts do
         local a=output[i][j]:gt(0.5)
         local b=label[i][j]:gt(0.5)
-        --print(a:size())
-        --print(b:size())
-        local sum = a:eq(b):sum()
-        correct = correct + sum
+--        print('a pos = ' .. a:sum())
+--        print('b pos = ' .. b:sum())
+        local mask = a:eq(b)
+        local correct = mask:sum()
+--        print('correct = '..correct)
+        local true_positive_ = b[mask]:sum()
+        -- print('true positive = '.. true_positive_)
+        local true_negative_ = correct - true_positive
+        -- print('correct = '..correct)
+        -- print('true_positive_ = '..true_positive_)
+        true_positive = true_positive + true_positive_
+        true_negative = true_negative + true_negative_
       end
     end
-    return correct/total
+--    print('total')
+--    print('tp'..true_positive)
+--    print('tn'..true_negative)
+--    print('total'..total)
+    local union = total - true_negative
+    if union == 0 then return 0.0 else return true_positive / union end
 end
+
 
 function accuracy(output,label)
     if type(output) == 'table' then
-        return accuracy_(output[#output],label[#output])
+        return accuracy_(output[#output],label[#label])
     else
         return accuracy_(output,label)
     end

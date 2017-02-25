@@ -34,7 +34,6 @@ function step(tag)
     for i,sample in loader[set]:run() do
         xlua.progress(i, nIters)
         local input, label, indices = unpack(sample)
-
         if opt.GPU ~= -1 then
             -- Convert to CUDA
             input = applyFn(function (x) return x:cuda() end, input)
@@ -52,12 +51,6 @@ function step(tag)
             model:backward(input, criterion:backward(output, label))
             optfn(evalFn, param, optimState)
         else
-            -- Validation: Get flipped output
-            --output = applyFn(function (x) return x:clone() end, output)
-            --local flippedOut = model:forward(flip(input))
-            --flippedOut = applyFn(function (x) return flip(shuffleLR(x)) end, flippedOut)
-            --output = applyFn(function (x,y) return x:add(y):div(2) end, output, flippedOut)
-
             -- Save sample
             local bs = opt[set .. 'Batch']
             local tmpIdx = (i-1) * bs + 1
@@ -70,7 +63,9 @@ function step(tag)
         end
 
         -- Calculate accuracy
-        avgAcc = avgAcc + accuracy(output, label) / nIters
+        acc = accuracy(output, label)
+        -- print('Accuracy ' .. acc)
+        avgAcc = avgAcc + acc / nIters
     end
 
     -- Print and log some useful metrics
